@@ -10,6 +10,6 @@ pip install translate
 pip install python-telegram-bot
 cd Bot
 git checkout dev
-python3 translator.dev
+python3 translator.py
 ```
 После ввода данных комманд запуститься бот, теперь им можно пользоваться в телеграмме по ссылке t.me/pipJokesBot.
