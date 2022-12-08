@@ -6,8 +6,9 @@ from telegram.ext.callbackqueryhandler import CallbackQueryHandler
 from telegram.ext.filters import Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from translate import Translator
+from globals import lang, started, api_string
 
-started = False
+
 def select_lang(update: Update, context: CallbackContext):
     keyboard = [
         [
@@ -25,7 +26,6 @@ def select_lang(update: Update, context: CallbackContext):
     update.message.reply_text('Выберите язык для перевода:', reply_markup=reply_markup)
 
 
-lang = ''
 def button(update: Update, context: CallbackContext):
     global lang
     lang = update.callback_query.data.lower()
@@ -43,7 +43,7 @@ def button(update: Update, context: CallbackContext):
         string = 'Арабский'
     if query.data == 'spanish':
         string = 'Испанский'
-    query.edit_message_text(text=f'Для перевода выбран ' + string + ' язык!')
+    query.edit_message_text(text=f'Для перевода выбран {string} язык!\nОтправьте сообщение, чтобы перевести его!')
 
 
 def lang_translator(user_input):
@@ -74,8 +74,9 @@ def start(update: Update, context: CallbackContext):
     update.message.reply_text(
         'Привет, я бот-переводчик. Я могу переводить слова с русского языка на английский, немецкий, французский, испанский, арабский и китайский. Чтобы выбрать язык для перевода введите команду /select_language.')
 
+
 def run():
-    API = '5897302324:AAFgNetJhW0aeE3h1wv3EM70ghYFgU7fMJQ'
+    API = api_string
     updater = Updater(API, use_context=True)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('start', start))
