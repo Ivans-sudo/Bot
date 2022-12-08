@@ -7,7 +7,7 @@ from telegram.ext.filters import Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from translate import Translator
 
-
+started = False
 def select_lang(update: Update, context: CallbackContext):
     keyboard = [
         [
@@ -52,21 +52,38 @@ def lang_translator(user_input):
     return translation
 
 
-
 def reply(update, context):
     user_input = update.message.text
     update.message.reply_text(lang_translator(user_input))
 
 
+def sel_lang(update: Update, context: CallbackContext):
+    global started
+    if started:
+        select_lang(update, context)
+        return
+    update.message.reply_text('Для начала включите бота!')
+
+
+def start(update: Update, context: CallbackContext):
+    global started
+    if started:
+        update.message.reply_text('Бот уже запущен!')
+        return
+    started = True
+    update.message.reply_text(
+        'Привет, я бот-переводчик. Я могу переводить слова с русского языка на английский, немецкий, французский, испанский, арабский и китайский. Чтобы выбрать язык для перевода введите команду /select_language.')
+
 def run():
     API = '5897302324:AAFgNetJhW0aeE3h1wv3EM70ghYFgU7fMJQ'
     updater = Updater(API, use_context=True)
     dp = updater.dispatcher
-    dp.add_handler(CommandHandler('start', select_lang))
-    dp.add_handler(CommandHandler('select_lang', select_lang))
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('select_language', sel_lang))
     dp.add_handler(CallbackQueryHandler(button))
     dp.add_handler(MessageHandler(Filters.text, reply))
     updater.start_polling()
     updater.idle()
+
 
 run()
