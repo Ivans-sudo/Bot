@@ -18,12 +18,13 @@ def select_lang(update: Update, context: CallbackContext):
         ],
         [
             InlineKeyboardButton("Французский", callback_data='french'),
-            InlineKeyboardButton("Китайский", callback_data='chineese'),
+            InlineKeyboardButton("Китайский", callback_data='chinese'),
             InlineKeyboardButton("Английский", callback_data='english')
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Выберите язык для перевода:', reply_markup=reply_markup)
+    update.message.reply_text(
+        'Выберите язык для перевода:', reply_markup=reply_markup)
 
 
 def button(update: Update, context: CallbackContext):
@@ -37,22 +38,31 @@ def button(update: Update, context: CallbackContext):
         string = 'Французский'
     if query.data == 'german':
         string = 'Немецкий'
-    if query.data == 'chineese':
+    if query.data == 'chinese':
         string = 'Китайский'
     if query.data == 'arabic':
         string = 'Арабский'
     if query.data == 'spanish':
         string = 'Испанский'
-    query.edit_message_text(text=f'Для перевода выбран {string} язык!\nОтправьте сообщение, чтобы перевести его!')
+    query.edit_message_text(
+        text=f'Для перевода выбран {string} язык!\nОтправьте сообщение, чтобы перевести его!')
 
 
 def lang_translator(user_input):
-    translator = Translator(from_lang='russian',to_lang=lang)
+    translator = Translator(from_lang='russian', to_lang=lang)
     translation = translator.translate(user_input)
     return translation
 
 
-def reply(update, context):
+def reply(update: Update, context: CallbackContext):
+    if not started:
+        update.message.reply_text(
+            'Для начала включите бота!\nДля этого введите команду /start.')
+        return
+    if lang == '':
+        update.message.reply_text(
+            'Сначала выберите язык для перевода!\nДля этого введите команду /select_language.')
+        return
     user_input = update.message.text
     update.message.reply_text(lang_translator(user_input))
 
@@ -62,7 +72,8 @@ def sel_lang(update: Update, context: CallbackContext):
     if started:
         select_lang(update, context)
         return
-    update.message.reply_text('Для начала включите бота!')
+    update.message.reply_text(
+        'Для начала включите бота!\nДля этого введите команду /start.')
 
 
 def start(update: Update, context: CallbackContext):
