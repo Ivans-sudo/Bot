@@ -45,7 +45,7 @@ def button(update: Update, context: CallbackContext):
     if query.data == 'spanish':
         string = 'Испанский'
     query.edit_message_text(
-        text=f'Для перевода выбран {string} язык!\nОтправьте сообщение, чтобы перевести его!')
+        text=f'Слова будут переводиться с Русского на {string} язык!\nОтправьте сообщение, чтобы перевести его!')
 
 
 def lang_translator(user_input):
